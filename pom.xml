@@ -7,7 +7,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Team33 Provision Library</name>
+    <name>Team33 Lazy Initialization Library</name>
     <description>Provides generic envelope classes that support lazy initialization</description>
     <url>https://github.com/akk-team33/lib-lazy</url>
 
