@@ -11,12 +11,14 @@ import java.util.function.Supplier;
  */
 public class Lazy<T> implements Supplier<T> {
 
+    @SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized")
     private Supplier<T> backing;
 
     /**
      * Initializes a new instance giving a supplier that defines the intended initialization of the represented value.
      */
     public Lazy(final Supplier<T> initial) {
+        //noinspection AnonymousInnerClass
         this.backing = new Supplier<T>() {
             @Override
             public synchronized T get() {
@@ -35,7 +37,7 @@ public class Lazy<T> implements Supplier<T> {
      * {@linkplain #Lazy(Supplier) originally defined initialization code}.</p>
      */
     @Override
-    public T get() {
+    public final T get() {
         return backing.get();
     }
 }

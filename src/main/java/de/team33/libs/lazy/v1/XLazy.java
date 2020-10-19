@@ -1,9 +1,7 @@
 package de.team33.libs.lazy.v1;
 
-import java.util.function.Supplier;
-
 /**
- * <p>Implements a {@link XSupplier} that provides a virtually fixed value.
+ * <p>Implements an {@link XSupplier} that provides a virtually fixed value.
  * This value is only actually determined when it is accessed for the first time.</p>
  *
  * <p>This implementation ensures that the {@linkplain #XLazy(XSupplier) originally defined initialization code}
@@ -11,6 +9,7 @@ import java.util.function.Supplier;
  */
 public class XLazy<T, X extends Exception> implements XSupplier<T, X> {
 
+    @SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized")
     private XSupplier<T, X> backing;
 
     /**
@@ -36,7 +35,7 @@ public class XLazy<T, X extends Exception> implements XSupplier<T, X> {
      * {@linkplain #XLazy(XSupplier) originally defined initialization code}.</p>
      */
     @Override
-    public T get() throws X {
+    public final T get() throws X {
         return backing.get();
     }
 }
