@@ -1,4 +1,4 @@
-package de.team33.libs.provision.v2;
+package de.team33.libs.lazy.v1;
 
 import java.util.function.Supplier;
 

@@ -1,34 +1,26 @@
-package de.team33.test.provision.v3;
+package de.team33.test.lazy.v1;
 
-import de.team33.libs.exceptional.v3.RuntimeWrapper;
-import de.team33.libs.provision.v3.Lazy;
+import de.team33.libs.lazy.v1.Lazy;
 import org.junit.Test;
 
 import java.util.Date;
-import java.util.function.Supplier;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class LazyTest {
 
-    private static final RuntimeWrapper<IllegalStateException> WRAPPER =
-            new RuntimeWrapper<>(IllegalStateException::new);
-
     private int counter = 0;
-    private Supplier<Date> lazy = new Lazy<>(WRAPPER.supplier(() -> {
-        counter += 1;
-        Thread.sleep(1);
-        return new Date();
-    }), this::getLazy, this::setLazy);
-
-    private void setLazy(final Supplier<Date> supplier) {
-        lazy = supplier;
-    }
-
-    private Supplier<Date> getLazy() {
-        return lazy;
-    }
-
+    private Lazy<Date> lazy = new Lazy<>(() -> {
+        try {
+            counter += 1;
+            Thread.sleep(1);
+            return new Date();
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    });
     private Date first = new Date();
 
     @Test

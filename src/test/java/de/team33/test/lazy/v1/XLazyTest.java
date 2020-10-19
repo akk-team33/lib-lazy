@@ -1,25 +1,19 @@
-package de.team33.test.provision.v2;
+package de.team33.test.lazy.v1;
 
-import de.team33.libs.provision.v2.Lazy;
+import de.team33.libs.lazy.v1.XLazy;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class LazyTest {
+public class XLazyTest {
 
     private int counter = 0;
-    private Lazy<Date> lazy = new Lazy<>(() -> {
-        try {
-            counter += 1;
-            Thread.sleep(1);
-            return new Date();
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+    private XLazy<Date, InterruptedException> lazy = new XLazy<>(() -> {
+        counter += 1;
+        Thread.sleep(1);
+        return new Date();
     });
     private Date first = new Date();
 
@@ -36,7 +30,11 @@ public class LazyTest {
         final Thread[] threads = new Thread[100];
         for (int i = 0; i < threads.length; ++i) {
             threads[i] = new Thread(() -> {
-                lazy.get();
+                try {
+                    lazy.get();
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException(e.getMessage(), e);
+                }
             });
         }
 
