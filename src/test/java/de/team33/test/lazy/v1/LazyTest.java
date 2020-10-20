@@ -5,11 +5,16 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static de.team33.libs.testing.v1.Runner.parallel;
+import static de.team33.libs.testing.v1.Runner.sequential;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class LazyTest {
+
+    private static final String ZERO_SMALLER_FIRST =
+            "Although <lazy> already exists, the date <zero> must be smaller than the (first) evaluation of <lazy>";
 
     private int counter = 0;
     private Lazy<Date> lazy = new Lazy<>(() -> {
@@ -21,34 +26,30 @@ public class LazyTest {
             throw new IllegalStateException(e.getMessage(), e);
         }
     });
-    private Date first = new Date();
 
     @Test
-    public void get() throws InterruptedException {
+    public void getFirst() throws InterruptedException {
+        final Date zero = new Date();
         Thread.sleep(1);
-        assertTrue(first.compareTo(lazy.get()) < 0);
-        assertSame(lazy.get(), lazy.get());
+        assertTrue(ZERO_SMALLER_FIRST, zero.compareTo(lazy.get()) < 0);
+    }
+
+    @Test
+    public void getSame() {
+        assertSame("If <lazy> is evaluated several times, the result must always be the same.", lazy.get(), lazy.get());
+    }
+
+    @Test
+    public void getSequential() {
+        assertEquals(0, counter);
+        sequential(100, () -> lazy.get());
         assertEquals(1, counter);
     }
 
     @Test
-    public void getMultiThreaded() throws InterruptedException {
-        final Thread[] threads = new Thread[100];
-        for (int i = 0; i < threads.length; ++i) {
-            threads[i] = new Thread(() -> {
-                lazy.get();
-            });
-        }
-
+    public void getParallel() {
         assertEquals(0, counter);
-
-        for (final Thread thread : threads) {
-            thread.start();
-        }
-        for (final Thread thread : threads) {
-            thread.join();
-        }
-
+        parallel(100, () -> lazy.get());
         assertEquals(1, counter);
     }
 }
