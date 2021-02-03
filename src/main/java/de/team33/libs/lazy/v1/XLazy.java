@@ -1,5 +1,7 @@
 package de.team33.libs.lazy.v1;
 
+import de.team33.libs.exceptional.v4.functional.XSupplier;
+
 /**
  * <p>Implements an {@link XSupplier} that provides a virtually fixed value.
  * This value is only actually determined when it is accessed for the first time.</p>
